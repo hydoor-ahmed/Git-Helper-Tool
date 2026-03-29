@@ -4,7 +4,7 @@ mod system;
 mod git;
 
 use colored::*;
-pub const VERSION: &str = "1.0";
+pub const VERSION: &str = "1.1";
 
 fn main() {
     if !system::is_git_installed() {
