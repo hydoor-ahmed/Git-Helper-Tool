@@ -55,11 +55,11 @@ fn update_repo() -> bool {
 }
 
 pub fn menu() {
-    clear_screen();
-    banner();
-
     loop {
         let mut input = String::new();
+
+        clear_screen();
+        banner();
 
         print!("\n1. New Repo.\n2. Update Exist Repo.\n0. Exit.\n> ");
         io::stdout().flush().expect("Buffer Error.");
@@ -75,7 +75,6 @@ pub fn menu() {
 
         match input {
             1 => {
-                // TODO: New Repo Login Gose Here.
                 if new_repo() {
                     println!("✅ Everything uploaded successfully!")
                 } else {
@@ -83,7 +82,6 @@ pub fn menu() {
                 }
             }
             2 => {
-                // TODO: Update Exist Repo Gose Here.
                 if update_repo() {
                     println!("✅ Everything uploaded successfully!")
                 } else {
