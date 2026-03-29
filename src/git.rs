@@ -1,7 +1,5 @@
 use std::{process::Command, vec};
 
-use crate::models;
-
 pub fn run_git_sequence(commands: Vec<Vec<String>>) -> bool {
     for args in commands {
         println!("🚀 Running: git {}...", args.join(" "));

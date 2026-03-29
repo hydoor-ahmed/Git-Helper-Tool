@@ -2,12 +2,13 @@
 mod menu;
 mod system;
 mod git;
-mod models;
 
 fn main() {
     if !system::is_git_installed() {
+        menu::clear_screen();
+        menu::banner();
         println!("\n❌ Git is not installed on your system!");
-        println!("💡 Please run: sudo pacman -S git");
+        println!("{}", system::get_distro_type());
         return;
     }
     
