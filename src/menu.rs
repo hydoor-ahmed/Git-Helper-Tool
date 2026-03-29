@@ -19,39 +19,21 @@ fn clear_screen() {
     io::stdout().flush().unwrap();
 }
 
-fn new_repo() -> bool {
-    clear_screen();
-    banner();
-
-    let mut repo_url = String::new();
-    let mut repo_commit_message = String::new();
-
-    print!("\n🔗 Repo Url: ");
-    io::stdout().flush().expect("Buffer Error.");
-    io::stdin().read_line(&mut repo_url).expect("Try Again.");
-
-    print!("\n💬 Commit Message: ");
-    io::stdout().flush().expect("Buffer Error.");
+fn get_input(prompt: &str) -> String {
+    print!("{}", prompt);
+    io::stdout().flush().unwrap();
+    let mut input = String::new();
     io::stdin()
-        .read_line(&mut repo_commit_message)
-        .expect("Try Again.");
+        .read_line(&mut input)
+        .expect("❌ Field To Read.");
 
-    git::create_new_repo(&repo_url.trim(), &repo_commit_message.trim())
+    input.trim().to_string()
 }
 
-fn update_repo() -> bool {
-    clear_screen();
-    banner();
-
-    let mut repo_commit_message = String::new();
-
-    print!("\n💬 Commit Message: ");
-    io::stdout().flush().expect("Buffer Error.");
-    io::stdin()
-        .read_line(&mut repo_commit_message)
-        .expect("Try Again.");
-
-    git::fast_push(&repo_commit_message.trim())
+fn pause() {
+  print!("\n⌨️ Press Enter to continue...");
+  let _ = io::stdout().flush();
+  let _ = io::stdin().read_line(&mut String::new());
 }
 
 pub fn menu() {
@@ -61,39 +43,50 @@ pub fn menu() {
         clear_screen();
         banner();
 
-        print!("\n1. New Repo.\n2. Update Exist Repo.\n0. Exit.\n> ");
+        print!("\n1. New Repo 🗞️\n2. Update Exist Repo ♻️\n0. Exit 🚪\n> ");
         io::stdout().flush().expect("Buffer Error.");
         io::stdin().read_line(&mut input).expect("Try Again.");
 
         let input: usize = match input.trim().parse() {
             Ok(num) => num,
             Err(_) => {
-                println!("Please Enter Valid Number.");
+                println!("❌ Please Enter Valid Number.");
                 continue;
             }
         };
 
         match input {
             1 => {
-                if new_repo() {
-                    println!("✅ Everything uploaded successfully!")
+                clear_screen();
+                banner();
+                let repo_url = get_input("🔗 Repo Url: ");
+                let repo_commit_message = get_input("💬 Commit Message: ");
+
+                if git::create_new_repo(&repo_url, &repo_commit_message) {
+                    println!("✅ Everything Uploaded Successfully!")
                 } else {
-                    println!("\n⚠️ Something went wrong during the process.");
+                    println!("\n⚠️ Something Went Wrong During the Process.");
                 }
+                pause();
             }
             2 => {
-                if update_repo() {
-                    println!("✅ Everything uploaded successfully!")
+                clear_screen();
+                banner();
+                let repo_commit_message = get_input("💬 Commit Message: ");
+
+                if git::fast_push(&repo_commit_message) {
+                    println!("✅ Everything Uploaded Successfully!")
                 } else {
-                    println!("\n⚠️ Something went wrong during the process.");
+                    println!("\n⚠️ Something Went Wrong During the Process.");
                 }
+                pause();
             }
             0 => {
                 println!("\nSee You Later 👋🏼");
                 break;
             }
             _ => {
-                print!("Please Enter Valid Choice.");
+                print!("❌ Please Enter Valid Choice.");
             }
         }
     }
