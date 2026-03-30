@@ -79,7 +79,7 @@ pub fn get_commit() -> String {
     let output = Command::new("git")
         .arg("log")
         .arg("-1")
-        .arg("--format=%s (%cr)")
+        .arg("--format=%s|(%cr)")
         .output()
         .expect("Field To Execute Git Command.");
 
@@ -88,7 +88,13 @@ pub fn get_commit() -> String {
         if commit_output.is_empty() {
             "No Commits Yet!".to_string()
         } else {
-          utils::truncate_text(&commit_output, 34)
+            let parts: Vec<&str> = commit_output.split("|").collect();
+            let message = parts[0];
+            let time_info = parts.get(1).unwrap_or(&"");
+
+            let clean_message = utils::truncate_text(&commit_output, 19);
+
+            format!("{}{}", clean_message, time_info)
         }
     } else {
         "Not a Git Repo or No Commits.".to_string()
@@ -115,4 +121,3 @@ pub fn get_changes() -> String {
         "Not a Git Repo or No Commits.".to_string()
     }
 }
-
