@@ -1,4 +1,11 @@
-use std::{fmt::format, process::Command};
+//! # Git Operations Engine And Repository Management
+//!
+//! This File Executes System Commands To Interact With Git Repositories.
+//! It Manages Automated Command Sequences For Initializing And Pushing Code.
+//! It Extracts RealTime Information Such As Branch Names And Commit History.
+//! It Includes Logic To Parse Repository Status And Truncate Long Messages.
+
+use std::process::Command;
 
 use crate::utils;
 

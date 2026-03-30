@@ -1,3 +1,10 @@
+//! # Main Application Entry And System Check
+//!
+//! This File Is The Starting Point Of The Program.
+//! It Checks If Git Is Installed On Your System Before Running.
+//! It Automatically Detects Your Linux Distribution To Show The Correct Install Command.
+//! It Connects All Modules Together And Starts The Main User Interface.
+
 mod git;
 mod menu;
 mod system;
@@ -21,11 +28,4 @@ fn main() {
     }
 
     menu::menu(VERSION);
-    // println!(
-    //     "{:#?}\nBranch: {}\nChanges: {}\nCommit: {}",
-    //     utils::status_dashboard(),
-    //     git::get_branch(),
-    //     git::get_changes(),
-    //     git::get_commit()
-    // );
 }

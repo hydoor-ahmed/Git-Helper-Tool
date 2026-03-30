@@ -1,66 +1,14 @@
+//! # User Interface And Menu Navigation System
+//!
+//! This File Handles Everything The User Sees And Interacts With.
+//! It Displays The Main Banner And The Dashboard For Git Operations.
+//! It Manages User Input And Allows Navigating Between Different Features.
+//! It Includes Functions To Clear The Screen And Handle Back Navigation Safely.
+
+
 use std::io::{self, Write};
-
 use crate::{git, utils};
-use colored::*;
-use terminal_size::{Width, terminal_size};
-
-pub fn banner(version: &str) {
-    let banner_text = r"
-              __________________     ______  __    ______                    
-              __  ____/__(_)_  /_    ___  / / /_______  /____________________
-              _  / __ __  /_  __/    __  /_/ /_  _ \_  /___  __ \  _ \_  ___/
-              / /_/ / _  / / /_      _  __  / /  __/  / __  /_/ /  __/  /    
-              \____/  /_/  \__/      /_/ /_/  \___//_/  _  .___/\___//_/     
-                                                        /_/ @7yd.o           
-
-";
-
-    let terminal_width = if let Some((Width(w), _)) = terminal_size() {
-        w as usize
-    } else {
-        80
-    };
-
-    for line in banner_text.lines() {
-        let line_len = line.len();
-        if line_len < terminal_width {
-            let padding = (terminal_width - line_len) / 2;
-            println!("{}{}", " ".repeat(padding), line.cyan().bold());
-        } else {
-            println!("{}", line.cyan().bold());
-        }
-    }
-
-    let line1 = format!("=== Git Helper Tool v{} | By Error404 ===", version);
-    let line2 = "-------------------------------------------";
-    let line3 = utils::get_random_hint();
-
-    let p1 = (terminal_width.saturating_sub(line1.len())) / 2;
-    println!("{}{}", " ".repeat(p1), line1.green().bold());
-
-    let p2 = (terminal_width.saturating_sub(line2.len())) / 2;
-    println!("{}{}", " ".repeat(p2), line2.black().bold());
-
-    let p3 = (terminal_width.saturating_sub(line3.len())) / 2;
-    println!("{}{}", " ".repeat(p3), line3.bright_purple());
-
-    for line in utils::status_dashboard().lines() {
-        let line_len = line.chars().count();
-        if line_len < terminal_width {
-            let padding = (terminal_width - line_len) / 2;
-            println!("{}{}", " ".repeat(padding), line.cyan().bold());
-        } else {
-            println!("{}", line.cyan().bold());
-        }
-    }
-
-    println!();
-}
-
-pub fn clear_screen() {
-    print!("\x1B[2J\x1B[1;1H");
-    io::stdout().flush().unwrap();
-}
+use colored::Colorize;
 
 fn get_input(prompt: &str) -> Option<String> {
     print!("{}", prompt);
@@ -87,8 +35,8 @@ pub fn menu(version: &str) {
     loop {
         let mut input = String::new();
 
-        clear_screen();
-        banner(version);
+        utils::clear_screen();
+        utils::banner(version);
 
         print!("\n1. New Repo 🗞️\n2. Update Exist Repo ♻️\n0. Exit 🚪\n> ");
         io::stdout().flush().expect("Buffer Error.");
@@ -104,8 +52,8 @@ pub fn menu(version: &str) {
 
         match input {
             1 => {
-                clear_screen();
-                banner(version);
+                utils::clear_screen();
+                utils::banner(version);
                 println!("{}", "Type '0' to Back.".black().bold().underline());
                 let repo_url = match get_input("🔗 Repo Url: ") {
                     Some(url) => url,
@@ -125,8 +73,8 @@ pub fn menu(version: &str) {
                 pause();
             }
             2 => {
-                clear_screen();
-                banner(version);
+                utils::clear_screen();
+                utils::banner(version);
                 println!("{}", "Type '0' to Back.".black().bold().underline());
 
                 let repo_commit_message = match get_input("💬 Commit Message: ") {

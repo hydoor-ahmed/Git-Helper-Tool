@@ -1,8 +1,69 @@
-use std::fmt::format;
+//! # Utility Support And Visual Formatting Module
+//!
+//! This File Contains Helper Functions To Enhance The User Interface.
+//! It Handles The ASCII Banner Rendering And Terminal Width Calculation.
+//! It Manages The Status Dashboard To Show RealTime Git Information.
+//! It Includes Tools For Text Truncation And Random Security Tip Generation.
 
 use rand::seq::{IndexedRandom};
-
+use terminal_size::{Width, terminal_size};
+use colored::Colorize;
 use crate::git;
+
+pub fn banner(version: &str) {
+    let banner_text = r"
+              __________________     ______  __    ______                    
+              __  ____/__(_)_  /_    ___  / / /_______  /____________________
+              _  / __ __  /_  __/    __  /_/ /_  _ \_  /___  __ \  _ \_  ___/
+              / /_/ / _  / / /_      _  __  / /  __/  / __  /_/ /  __/  /    
+              \____/  /_/  \__/      /_/ /_/  \___//_/  _  .___/\___//_/     
+                                                        /_/ @7yd.o           
+
+";
+
+    let terminal_width = if let Some((Width(w), _)) = terminal_size() {
+        w as usize
+    } else {
+        80
+    };
+
+    // * Banner
+    for line in banner_text.lines() {
+        let line_len = line.len();
+        if line_len < terminal_width {
+            let padding = (terminal_width - line_len) / 2;
+            println!("{}{}", " ".repeat(padding), line.cyan().bold());
+        } else {
+            println!("{}", line.cyan().bold());
+        }
+    }
+
+    let line1 = format!("=== Git Helper Tool v{} | By Error404 ===", version);
+    let line2 = "-------------------------------------------";
+    let line3 = get_random_hint();
+
+    let p1 = (terminal_width.saturating_sub(line1.len())) / 2;
+    println!("{}{}", " ".repeat(p1), line1.green().bold());
+
+    let p2 = (terminal_width.saturating_sub(line2.len())) / 2;
+    println!("{}{}", " ".repeat(p2), line2.black().bold());
+
+    let p3 = (terminal_width.saturating_sub(line3.len())) / 2;
+    println!("{}{}", " ".repeat(p3), line3.bright_purple());
+
+    // * Status Dashboard Box
+    for line in status_dashboard().lines() {
+        let line_len = line.chars().count();
+        if line_len < terminal_width {
+            let padding = (terminal_width - line_len) / 2;
+            println!("{}{}", " ".repeat(padding), line.cyan().bold());
+        } else {
+            println!("{}", line.cyan().bold());
+        }
+    }
+
+    println!();
+}
 
 pub fn get_random_hint() -> &'static str {
 let hints = [
@@ -33,6 +94,7 @@ let hints = [
 }
 
 pub fn status_dashboard() -> String {
+  // * Don't Touch The Spaces in This Box :)
   format!("
   ┌──────────────── Status Dashboard ────────────────┐
 🌿 Branch: {}.           📝 Changes: {}
@@ -53,3 +115,9 @@ pub fn truncate_text(text: &str, max_width: usize) -> String {
 
   format!("{}...", truncated)
 }
+
+pub fn clear_screen() {
+    print!("\x1B[2J\x1B[1;1H");
+    std::io::Write::flush(&mut std::io::stdout()).unwrap();
+}
+
